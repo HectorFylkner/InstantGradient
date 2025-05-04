@@ -1,4 +1,4 @@
-/// <reference types=\"@webgpu/types\" />
+/// <reference types="@webgpu/types" />
 
 /**
  * GPU path: compile WGSL shader & draw gradient to an OffscreenCanvas.

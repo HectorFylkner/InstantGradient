@@ -2,7 +2,7 @@
  * Gradient model & helpers.
  */
 
-import { OKLab, oklabToHex, hexToOKLab } from './color';
+import { OKLab, oklabToHex } from './color';
 import { clamp } from './utils';
 
 export interface GradientStop {
@@ -153,10 +153,6 @@ export function toSvgDefinition(g: Gradient, id = 'gradient-svg'): string {
   }
 
   const sortedStops = [...g.stops].sort((a, b) => a.position - b.position);
-
-  // Convert angle (0=right, 90=down) to SVG gradientTransform rotation
-  // SVG rotation is clockwise from the positive x-axis
-  const svgAngle = g.angle; // SVG angle matches CSS angle definition
 
   // Calculate x1, y1, x2, y2 based on angle (simplified - assumes bounding box)
   // More accurate calculation might involve transforming unit vectors

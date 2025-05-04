@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { toCss, Gradient, OKLab, contrastAudit, GradientStop } from '../src/gradient';
+import { toCss, Gradient, OKLab, contrastAudit, /*GradientStop*/ } from '../src/gradient';
 import { hexToOKLab } from '../src/color'; // Need this for setting up test gradients
 
 // Mock oklabToHex for CSS serialization tests only
@@ -165,6 +165,32 @@ describe('Gradient Contrast Audit', () => {
      expect(contrastAudit(gradient0)).toEqual([]);
      expect(contrastAudit(gradient1)).toEqual([]);
   });
+
+  it('handles gradients with less than 2 stops for contrast audit', () => {
+    const singleStopGradient: Gradient = {
+      id: 'single',
+      type: 'linear',
+      angle: 90,
+      stops: [{ id: 's1', position: 0.5, color: hexToOKLab('#ffffff') }]
+    };
+    expect(contrastAudit(singleStopGradient)).toEqual([]);
+
+    const noStopGradient: Gradient = {
+      id: 'none',
+      type: 'linear',
+      angle: 90,
+      stops: []
+    };
+    expect(contrastAudit(noStopGradient)).toEqual([]);
+  });
+
+  // Add a test for the contrast calculation helper if desired
+  // it('calculates contrast ratio correctly', () => {
+  //     const white = hexToOKLab('#ffffff');
+  //     const black = hexToOKLab('#000000');
+  //     const _red = hexToOKLab('#ff0000'); // Prefix unused variable
+  //     expect(calculateContrastRatio(white, black)).toBeCloseTo(21, 1);
+  // });
 });
 
 // TODO: Add tests for radial/conic CSS serialization once implemented

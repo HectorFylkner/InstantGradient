@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import { renderGradientGL, Gradient } from '../src/gpu';
+import { Gradient } from '../src/gpu';
 import { hexToOKLab } from '../src/color';
 
 // Mock the WebGPU API for Node environment
@@ -54,7 +54,6 @@ beforeAll(() => {
     if (typeof OffscreenCanvas === 'undefined') global.OffscreenCanvas = class MockOffscreenCanvas {
         width: number;
         height: number;
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         constructor(w:number, h:number) { this.width=w; this.height=h; }
         getContext(type: string) {
             if (type === 'webgpu') {
@@ -62,7 +61,7 @@ beforeAll(() => {
             }
             return null;
         }
-    } as any;
+    } as any; // Keep 'any' here for simplicity in the mock
 });
 
 afterAll(() => {
