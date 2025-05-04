@@ -1,0 +1,12 @@
+{
+  "extends": "@gradient-tool/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src", "stories", ".storybook"],
+  "exclude": ["node_modules", "dist", "storybook-static"]
+} 

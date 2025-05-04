@@ -1,0 +1,10 @@
+{
+  "extends": "@gradient-tool/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "lib": ["es2022"] // Core doesn't need DOM libs
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "__tests__"]
+} 

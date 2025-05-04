@@ -1,0 +1,81 @@
+import { Meta, StoryObj, Canvas, Controls, ArgTypes } from '@storybook/blocks';
+import { GradientCanvas } from '@/components/GradientCanvas'; // Aliased from web package
+import { useGradientStore } from '@/state/useGradientStore'; // Aliased from web package
+import * as core from '@gradient-tool/core'; // Aliased from core package
+
+<Meta 
+  title="Components/GradientCanvas"
+  component={GradientCanvas}
+  tags={['autodocs']}
+  parameters={{
+    layout: 'centered',
+  }}
+  argTypes={{
+    gradient: { control: 'object', description: 'The gradient object from @gradient-tool/core' },
+    width: { control: 'number' },
+    height: { control: 'number' },
+    className: { control: 'text' }
+  }}
+/>
+
+export const defaultGradient = {
+  id: 'default-sb',
+  type: 'linear',
+  angle: 135,
+  stops: [
+    { id: 's1', position: 0, color: core.hexToOKLab('#ff0000') }, 
+    { id: 's2', position: 1, color: core.hexToOKLab('#0000ff') }, 
+  ],
+};
+
+export const threeStopGradient = {
+  id: 'three-stop-sb',
+  type: 'linear',
+  angle: 45,
+  stops: [
+    { id: 's1', position: 0.1, color: core.hexToOKLab('#00f2ff') }, 
+    { id: 's2', position: 0.5, color: core.hexToOKLab('#ff00d4') }, 
+    { id: 's3', position: 0.9, color: core.hexToOKLab('#fffb00') }, 
+  ],
+};
+
+
+# GradientCanvas
+
+Renders the interactive gradient preview using WebGPU (with CSS fallback).
+It takes a `Gradient` object from `@gradient-tool/core` as its main prop.
+
+<Canvas>
+  <StoryObj name="Default (Red to Blue)" args={{ gradient: defaultGradient, width: 400, height: 400 }}>
+    {(args) => <GradientCanvas {...args} />}
+  </StoryObj>
+</Canvas>
+
+<Controls />
+
+## Examples
+
+### Three Stops
+
+<Canvas>
+  <StoryObj name="Three Stops (Cyan, Magenta, Yellow)" args={{ gradient: threeStopGradient, width: 300, height: 300 }}>
+    {(args) => <GradientCanvas {...args} />}
+  </StoryObj>
+</Canvas>
+
+### Using Zustand Store
+
+This example pulls the gradient directly from the default `useGradientStore` state.
+
+<Canvas>
+  <StoryObj name="From Zustand Store">
+    {() => {
+      const gradient = useGradientStore(s => s.gradient);
+      return <GradientCanvas gradient={gradient} width={250} height={250} />;
+    }}
+  </StoryObj>
+</Canvas>
+
+## Props
+
+<ArgTypes /> 

@@ -1,0 +1,18 @@
+# Dependency directories
+node_modules/
+
+# Build output
+dist/
+.turbo/
+storybook-static/
+
+# Lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Coverage
+coverage/
+
+# Optional VS Code settings
+.vscode/ 
