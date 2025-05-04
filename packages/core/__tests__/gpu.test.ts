@@ -68,35 +68,18 @@ beforeAll(() => {
     if (typeof navigator !== 'undefined' && navigator.gpu) {
         originalGpu = navigator.gpu;
     }
-    // Setup detailed mock for tests needing a functional-ish GPU object
-    // Ensure navigator exists before attempting to mock gpu on it
-    if (typeof navigator !== 'undefined' && !navigator.gpu) {
+
+    // Ensure navigator exists before trying to assign mock
+    if (typeof navigator !== 'undefined') {
+        // Force assignment of our mock GPU object for consistent testing
         // @ts-expect-error - Mocking GPU
-        navigator.gpu = {
-            getPreferredCanvasFormat: () => 'bgra8unorm' as GPUTextureFormat,
-            requestAdapter: async () => ({
-                requestDevice: async () => ({
-                    // Mock device methods needed by renderGradientGL
-                    createShaderModule: () => ({}),
-                    createPipelineLayout: () => ({}),
-                    createRenderPipeline: () => ({ getBindGroupLayout: () => ({}) }),
-                    createBuffer: () => ({}),
-                    createBindGroup: () => ({}),
-                    // Add mock for createCommandEncoder
-                    createCommandEncoder: () => ({
-                        beginRenderPass: () => ({
-                            setPipeline: () => {},
-                            setVertexBuffer: () => {},
-                            setBindGroup: () => {},
-                            draw: () => {},
-                            end: () => {}
-                        }),
-                        finish: () => ({})
-                    } as unknown as GPUCommandEncoder),
-                    queue: { writeBuffer: () => {}, submit: () => {} },
-                } as unknown as GPUDevice)
-            } as unknown as GPUAdapter)
-        };
+        navigator.gpu = mockGpu; 
+    }
+
+    // Polyfill OffscreenCanvasRenderingContext2D if not present
+    if (typeof globalThis.OffscreenCanvasRenderingContext2D === 'undefined') {
+        // @ts-expect-error - Polyfilling
+        globalThis.OffscreenCanvasRenderingContext2D = class MockContext {};
     }
 
     // Mock OffscreenCanvas if not present (e.g., in Node)
