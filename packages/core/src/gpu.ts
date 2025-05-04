@@ -90,11 +90,13 @@ export async function renderGradientGL(
 
   // 1. Get Device and Context (cache or request)
   if (!gpuDevice) {
-    if (!navigator.gpu) {
+    // Check navigator and navigator.gpu existence first
+    if (typeof navigator === 'undefined' || !navigator.gpu) {
       console.error('WebGPU not supported.');
       cpuFallback(canvas, gradient); // Use fallback
       throw new Error('WebGPU not supported'); // Throw to signal error to caller
     }
+    // Now we know navigator.gpu exists
     try {
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) throw new Error('No GPU adapter found');
@@ -117,6 +119,10 @@ export async function renderGradientGL(
 
   let context = gpuContextMap.get(canvas);
   if (!context) {
+    // Ensure navigator.gpu exists before getting format
+    if (typeof navigator === 'undefined' || !navigator.gpu) {
+       throw new Error('navigator.gpu unavailable when expected for context configuration.');
+    }
     context = canvas.getContext('webgpu') as GPUCanvasContext;
     if (!context) {
         console.error('Failed to get WebGPU context from OffscreenCanvas.');
