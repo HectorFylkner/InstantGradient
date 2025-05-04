@@ -149,8 +149,8 @@ describe('Color Conversions', () => {
      const c2_lch = oklabToOklch(c2_lab);
 
     it('interpolates OKLab midpoint correctly', () => {
-        const _midpoint = interpolateOKLab(c1_lab, c2_lab, 0.5);
-        expectOklabClose(_midpoint, { l: 0.5, a: 0.0, b: 0.05 });
+        const _midpoint_lab = interpolateOKLab(c1_lab, c2_lab, 0.5);
+        expectOklabClose(_midpoint_lab, { l: 0.5, a: 0.0, b: 0.05 });
     });
 
     it('interpolates OKLab start point correctly', () => {

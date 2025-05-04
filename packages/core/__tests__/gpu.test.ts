@@ -51,17 +51,40 @@ beforeAll(() => {
 
     // Mock OffscreenCanvas if not present (e.g., in Node)
     // @ts-expect-error - Polyfilling OffscreenCanvas
-    if (typeof OffscreenCanvas === 'undefined') global.OffscreenCanvas = class MockOffscreenCanvas {
+    if (typeof OffscreenCanvas === 'undefined') {
+      // Define a minimal interface for the mock
+      interface MockOffscreenCanvas extends OffscreenCanvas {
+         // Add methods/properties used in the test if necessary
+      }
+      global.OffscreenCanvas = class MockOffscreenCanvasImpl implements MockOffscreenCanvas {
         width: number;
         height: number;
-        constructor(w:number, h:number) { this.width=w; this.height=h; }
-        getContext(type: string) {
-            if (type === 'webgpu') {
-                return mockContext;
+        // Implement required OffscreenCanvas methods/properties minimally
+        // We need getContext for the test.
+        // Other methods like transferToImageBitmap, convertToBlob etc. are not called
+        // directly in this test setup, so they can be omitted or mocked if needed elsewhere.
+        constructor(w: number, h: number) { this.width = w; this.height = h; }
+        getContext(contextId: OffscreenRenderingContextId, options?: any): OffscreenRenderingContext | null {
+            if (contextId === 'webgpu') {
+                return mockContext as unknown as OffscreenRenderingContext; // Cast the mock context
             }
+             if (contextId === '2d') { // Handle potential fallback calls
+                 // Return a minimal 2D context mock if needed by fallback tests
+                 return { fillRect: vi.fn(), fillText: vi.fn(), } as unknown as OffscreenRenderingContext;
+             }
             return null;
         }
-    } as any; // Keep 'any' here for simplicity in the mock
+        // Add dummy implementations for required properties/methods if TS complains
+        // Example: transferToImageBitmap = () => new ImageBitmap(); 
+        // Example: convertToBlob = () => Promise.resolve(new Blob());
+        // Avoid adding unnecessary complexity if not strictly required by TS/ESLint
+         transferControlToOffscreen(): OffscreenCanvas { throw new Error('Method not implemented.'); }
+         convertToBlob(options?: ImageEncodeOptions | undefined): Promise<Blob> { throw new Error('Method not implemented.'); }
+         addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined): void { throw new Error('Method not implemented.'); }
+         removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions | undefined): void { throw new Error('Method not implemented.'); }
+         dispatchEvent(event: Event): boolean { throw new Error('Method not implemented.'); }
+      } as unknown as typeof OffscreenCanvas; // Cast the class itself
+    }
 });
 
 afterAll(() => {
