@@ -64,7 +64,7 @@ beforeAll(() => {
         // Other methods like transferToImageBitmap, convertToBlob etc. are not called
         // directly in this test setup, so they can be omitted or mocked if needed elsewhere.
         constructor(w: number, h: number) { this.width = w; this.height = h; }
-        getContext(contextId: OffscreenRenderingContextId, options?: any): OffscreenRenderingContext | null {
+        getContext(contextId: OffscreenRenderingContextId, _options?: unknown): OffscreenRenderingContext | null {
             if (contextId === 'webgpu') {
                 return mockContext as unknown as OffscreenRenderingContext; // Cast the mock context
             }
@@ -79,10 +79,10 @@ beforeAll(() => {
         // Example: convertToBlob = () => Promise.resolve(new Blob());
         // Avoid adding unnecessary complexity if not strictly required by TS/ESLint
          transferControlToOffscreen(): OffscreenCanvas { throw new Error('Method not implemented.'); }
-         convertToBlob(options?: ImageEncodeOptions | undefined): Promise<Blob> { throw new Error('Method not implemented.'); }
-         addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions | undefined): void { throw new Error('Method not implemented.'); }
-         removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions | undefined): void { throw new Error('Method not implemented.'); }
-         dispatchEvent(event: Event): boolean { throw new Error('Method not implemented.'); }
+         convertToBlob(_options?: ImageEncodeOptions | undefined): Promise<Blob> { throw new Error('Method not implemented.'); }
+         addEventListener(_type: string, _listener: EventListenerOrEventListenerObject, _options?: boolean | AddEventListenerOptions | undefined): void { throw new Error('Method not implemented.'); }
+         removeEventListener(_type: string, _listener: EventListenerOrEventListenerObject, _options?: boolean | EventListenerOptions | undefined): void { throw new Error('Method not implemented.'); }
+         dispatchEvent(_event: Event): boolean { throw new Error('Method not implemented.'); }
       } as unknown as typeof OffscreenCanvas; // Cast the class itself
     }
 });
