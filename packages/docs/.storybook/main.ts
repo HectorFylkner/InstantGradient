@@ -13,6 +13,7 @@ const config: StorybookConfig = {
     '@storybook/addon-links',
     '@storybook/addon-essentials', // Includes Controls, Actions, Viewport, etc.
     '@storybook/addon-interactions', // For play functions
+    '@storybook/addon-docs', // Add addon for MDX support
   ],
   framework: {
     name: '@storybook/react-vite',

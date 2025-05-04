@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@gradient-tool/tsconfig": "workspace:*",
+    "@storybook/addon-docs": "^8.6.12",
     "@storybook/addon-essentials": "^8.1.4",
     "@storybook/addon-interactions": "^8.1.4",
     "@storybook/addon-links": "^8.1.4",
@@ -36,4 +37,4 @@
     "typescript": "^5.4.5",
     "vite": "^5.2.11"
   }
-} 
+}

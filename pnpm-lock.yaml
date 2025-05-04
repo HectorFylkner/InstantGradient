@@ -94,6 +94,9 @@ importers:
       '@gradient-tool/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@storybook/addon-docs':
+        specifier: ^8.6.12
+        version: 8.6.12(@types/react@18.3.20)(storybook@8.6.12(prettier@3.5.3))
       '@storybook/addon-essentials':
         specifier: ^8.1.4
         version: 8.6.12(@types/react@18.3.20)(storybook@8.6.12(prettier@3.5.3))
@@ -173,7 +176,7 @@ importers:
         version: 1.2.1
       '@vercel/edge-functions-ui':
         specifier: ^0.2.1
-        version: 0.2.1(next@12.3.7(@babel/core@7.27.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 0.2.1(next@12.3.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@vercel/kv':
         specifier: ^3.0.0
         version: 3.0.0
@@ -4898,10 +4901,10 @@ snapshots:
     dependencies:
       crypto-js: 4.2.0
 
-  '@vercel/edge-functions-ui@0.2.1(next@12.3.7(@babel/core@7.27.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@vercel/edge-functions-ui@0.2.1(next@12.3.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       clsx: 1.2.1
-      next: 12.3.7(@babel/core@7.27.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 12.3.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-transpile-modules: 8.0.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -5999,7 +6002,7 @@ snapshots:
       enhanced-resolve: 5.18.1
       escalade: 3.2.0
 
-  next@12.3.7(@babel/core@7.27.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next@12.3.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@next/env': 12.3.7
       '@swc/helpers': 0.4.11
@@ -6007,7 +6010,7 @@ snapshots:
       postcss: 8.4.14
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      styled-jsx: 5.0.7(@babel/core@7.27.1)(react@18.3.1)
+      styled-jsx: 5.0.7(react@18.3.1)
       use-sync-external-store: 1.2.0(react@18.3.1)
     optionalDependencies:
       '@next/swc-android-arm-eabi': 12.3.4
@@ -6496,11 +6499,9 @@ snapshots:
     dependencies:
       js-tokens: 9.0.1
 
-  styled-jsx@5.0.7(@babel/core@7.27.1)(react@18.3.1):
+  styled-jsx@5.0.7(react@18.3.1):
     dependencies:
       react: 18.3.1
-    optionalDependencies:
-      '@babel/core': 7.27.1
 
   sucrase@3.35.0:
     dependencies:
