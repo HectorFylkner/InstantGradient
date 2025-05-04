@@ -69,13 +69,6 @@ beforeAll(() => {
         originalGpu = navigator.gpu;
     }
 
-    // Ensure navigator exists before trying to assign mock
-    if (typeof navigator !== 'undefined') {
-        // Force assignment of our mock GPU object for consistent testing
-        // @ts-expect-error - Mocking GPU
-        navigator.gpu = mockGpu; 
-    }
-
     // Polyfill OffscreenCanvasRenderingContext2D if not present
     if (typeof globalThis.OffscreenCanvasRenderingContext2D === 'undefined') {
         // @ts-expect-error - Polyfilling
@@ -121,8 +114,8 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-  // Restore original navigator.gpu only if navigator exists
-  if (typeof navigator !== 'undefined') {
+  // Restore original navigator.gpu only if navigator exists AND it was stored
+  if (typeof navigator !== 'undefined' && typeof originalGpu !== 'undefined') {
     // @ts-expect-error - Restoring GPU
     navigator.gpu = originalGpu;
   }
@@ -132,9 +125,24 @@ afterAll(() => {
 describe('GPU Rendering', () => {
     // Test that runs with a mocked functional GPU
     it('renderGradientGL runs without throwing with mocked WebGPU API', async () => {
-        const canvas = new OffscreenCanvas(100, 100);
-        const gradient: Gradient = { id: 'test', type:'linear', angle: 90, stops: [{id:'1', position: 0, color: hexToOKLab('#000')}, {id:'2', position: 1, color: hexToOKLab('#fff')}] };
-        await expect(renderGradientGL(canvas, gradient)).resolves.toBeUndefined();
+        let tempGpu: GPU | undefined;
+        try {
+            // Store current and apply mock specifically for this test
+            if (typeof navigator !== 'undefined') {
+                tempGpu = navigator.gpu;
+                Object.defineProperty(navigator, 'gpu', { value: mockGpu, configurable: true, writable: true });
+            }
+
+            const canvas = new OffscreenCanvas(100, 100);
+            const gradient: Gradient = { id: 'test', type:'linear', angle: 90, stops: [{id:'1', position: 0, color: hexToOKLab('#000')}, {id:'2', position: 1, color: hexToOKLab('#fff')}] };
+            await expect(renderGradientGL(canvas, gradient)).resolves.toBeUndefined();
+
+        } finally {
+            // Restore original GPU object after test execution
+            if (typeof navigator !== 'undefined') {
+                 Object.defineProperty(navigator, 'gpu', { value: tempGpu, configurable: true, writable: true });
+            }
+        }
     });
 
     // Test the failure path when no adapter is found
