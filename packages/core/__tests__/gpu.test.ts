@@ -64,9 +64,13 @@ if (typeof globalThis.GPUBufferUsage === 'undefined') {
 }
 
 beforeAll(() => {
-    originalGpu = navigator.gpu; // Store original
+    // Store original only if navigator and navigator.gpu exist
+    if (typeof navigator !== 'undefined' && navigator.gpu) {
+        originalGpu = navigator.gpu;
+    }
     // Setup detailed mock for tests needing a functional-ish GPU object
-    if (!navigator.gpu) {
+    // Ensure navigator exists before attempting to mock gpu on it
+    if (typeof navigator !== 'undefined' && !navigator.gpu) {
         // @ts-expect-error - Mocking GPU
         navigator.gpu = {
             getPreferredCanvasFormat: () => 'bgra8unorm' as GPUTextureFormat,
@@ -134,9 +138,11 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-  // Restore original navigator.gpu
-  // @ts-expect-error - Restoring GPU
-  navigator.gpu = originalGpu;
+  // Restore original navigator.gpu only if navigator exists
+  if (typeof navigator !== 'undefined') {
+    // @ts-expect-error - Restoring GPU
+    navigator.gpu = originalGpu;
+  }
   // Clean up OffscreenCanvas polyfill if needed
 });
 
