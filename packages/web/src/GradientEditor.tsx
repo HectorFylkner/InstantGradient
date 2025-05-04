@@ -1,8 +1,9 @@
 /**
  * Main gradient editor interface.
  */
-import { useState, useCallback } from 'react';
-import { GradientCanvas, GradientCanvasHandle } from '@/components/GradientCanvas';
+import { useState, useCallback, useRef } from 'react';
+import { GradientCanvas } from '@/components/GradientCanvas';
+import type { GradientCanvasHandle } from '@/components/GradientCanvas';
 import { StopHandle } from '@/components/StopHandle';
 import { useGradientStore } from '@/state/useGradientStore';
 import { toCss, toSvgFile } from '@gradient-tool/core';
@@ -10,7 +11,6 @@ import { Check, Copy, Share2, ImageDown, Code2 } from 'lucide-react';
 import { useShareLink } from '@/hooks/useShareLink';
 import { ContrastBanner } from '@/components/ui/ContrastBanner';
 import { triggerDownload } from '@/utils/export';
-import { useRef } from 'react';
 import { throttle } from '@/utils/throttle';
 
 export default function GradientEditor() {
@@ -51,7 +51,9 @@ export default function GradientEditor() {
       triggerDownload('gradient.svg', svgString, 'image/svg+xml');
   }, [gradient]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const throttledExportPng = useCallback(throttle(handleExportPng, 1000), [handleExportPng]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const throttledExportSvg = useCallback(throttle(handleExportSvg, 1000), [handleExportSvg]);
 
   if (isLoading) {

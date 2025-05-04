@@ -1,8 +1,12 @@
-import 'fake-indexeddb/auto'; // Polyfills IndexedDB for Node testing
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { saveGradient, loadLastGradient } from '../src/persistence/dexie-gradient';
-import { Gradient, hexToOKLab } from '@gradient-tool/core';
+// Import fake-indexeddb first to ensure it mocks the global API before Dexie needs it
+import 'fake-indexeddb/auto'; 
+
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Dexie from 'dexie';
+import { saveGradient, loadLastGradient } from '@/persistence/dexie-gradient';
+import type { GradientRecord } from '@/persistence/dexie-gradient';
+import type { Gradient } from '@gradient-tool/core';
+import { hexToOKLab } from '@gradient-tool/core';
 
 // Helper to clear the database between tests
 async function clearDatabase() {

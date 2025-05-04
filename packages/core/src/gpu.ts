@@ -5,7 +5,7 @@
  * Opt-in via `enableGpu` flag.
  */
 
-import { Gradient } from './gradient';
+import type { Gradient } from './gradient';
 import { clamp } from './utils';
 import wgslSource from './shader.wgsl?raw'; // Import shader source
 
@@ -60,14 +60,17 @@ let gpuPipeline: GPURenderPipeline | null = null;
 // CPU fallback (keep as is)
 function cpuFallback(canvas: OffscreenCanvas, _gradient: Gradient) {
     console.warn("WebGPU not available, CPU fallback not implemented yet.");
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
+    // Explicitly get the 2D context for fallback rendering
+    const ctx = canvas.getContext('2d'); 
+    if (ctx instanceof OffscreenCanvasRenderingContext2D) { // Type guard
       ctx.fillStyle = '#cccccc'; // Simple gray fallback
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.font = '14px sans-serif';
       ctx.fillStyle = '#333333';
       ctx.textAlign = 'center';
       ctx.fillText('WebGPU Unavailable', canvas.width / 2, canvas.height / 2);
+    } else {
+        console.error("Failed to get 2D context for CPU fallback.");
     }
 }
 
@@ -96,10 +99,19 @@ export async function renderGradientGL(
       const adapter = await navigator.gpu.requestAdapter();
       if (!adapter) throw new Error('No GPU adapter found');
       gpuDevice = await adapter.requestDevice();
+      
+      // Add check for null device after request
+      if (!gpuDevice) {
+          throw new Error('WebGPU device acquisition failed'); // Throw specific error
+      }
+
     } catch (e) {
       console.error('Failed to initialize WebGPU:', e);
-       cpuFallback(canvas, gradient);
-      throw e; // Re-throw
+       cpuFallback(canvas, gradient); // Fallback on exception too
+      // Decide whether to re-throw or return after fallback
+      // Throwing makes the test fail unless caught, returning lets it pass silently
+      // Let's re-throw for now, matching original behavior
+      throw e; 
     }
   }
 
@@ -117,6 +129,12 @@ export async function renderGradientGL(
       alphaMode: 'premultiplied', // Or 'opaque'
     });
     gpuContextMap.set(canvas, context);
+  }
+
+  // Ensure device is available before proceeding (it should be after the init block)
+  if (!gpuDevice) {
+      console.error('GPU device not available after initialization attempt.');
+      throw new Error('GPU device unavailable');
   }
 
   // 2. Create Pipeline (cache or create)

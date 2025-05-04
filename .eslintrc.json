@@ -33,5 +33,15 @@
     "react": {
       "version": "detect" // Automatically detect React version
     }
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"],
+      "rules": {
+        // Disable unused vars rule entirely for test files
+        "@typescript-eslint/no-unused-vars": "off"
+        // Can add other test-specific rule adjustments here
+      }
+    }
+  ]
 } 

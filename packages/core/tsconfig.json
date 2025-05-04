@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": ".",
-    "lib": ["es2022"] // Core doesn't need DOM libs
+    "lib": ["es2022", "dom", "dom.iterable"] // Added DOM libs
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "__tests__"]

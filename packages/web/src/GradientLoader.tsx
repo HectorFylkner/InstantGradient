@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGradientStore } from './state/useGradientStore';
-import { Gradient } from '@gradient-tool/core';
+import type { Gradient } from '@gradient-tool/core';
 
 /**
  * Component responsible for loading a gradient from a share slug 
@@ -52,9 +52,11 @@ export default function GradientLoader() {
         // Navigate to the main editor page
         navigate('/', { replace: true }); 
 
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Failed to load shared gradient:', err);
-        setError(err.message || 'Could not load the shared gradient.');
+        // Check if err is an Error object before accessing message
+        const message = (err instanceof Error) ? err.message : 'Could not load the shared gradient.';
+        setError(message);
         setLoadingState('error');
         // Optional: redirect to home after error display
         // setTimeout(() => navigate('/'), 3000);

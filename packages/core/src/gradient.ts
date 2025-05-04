@@ -2,7 +2,8 @@
  * Gradient model & helpers.
  */
 
-import { OKLab, oklabToHex } from './color';
+import type { OKLab } from './color';
+import { oklabToHex } from './color';
 import { clamp } from './utils';
 
 export interface GradientStop {
@@ -129,10 +130,12 @@ export function contrastAudit(g: Gradient, threshold = 4.5): [string, string][] 
     const stop1 = sortedStops[i];
     const stop2 = sortedStops[i + 1];
 
-    const ratio = calculateContrastRatio(stop1.color, stop2.color);
+    // Assert stops are non-null; loop condition ensures this
+    const ratio = calculateContrastRatio(stop1!.color, stop2!.color);
 
     if (ratio < threshold) {
-      failingPairs.push([stop1.id, stop2.id]);
+      // Assert stops are non-null for id access
+      failingPairs.push([stop1!.id, stop2!.id]);
     }
   }
 

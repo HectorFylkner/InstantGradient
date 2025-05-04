@@ -1,5 +1,6 @@
-import Dexie, { Table } from 'dexie';
-import { Gradient } from '@gradient-tool/core'; // Adjusted import path
+import Dexie from 'dexie';
+import type { Table } from 'dexie';
+import type { Gradient } from '@gradient-tool/core'; // Adjusted import path
 
 /** Entity stored in IndexedDB. `id` is always "last" for single-doc v1. */
 export interface GradientRecord {

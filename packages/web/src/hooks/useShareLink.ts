@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Gradient } from '@gradient-tool/core';
+import type { Gradient } from '@gradient-tool/core';
 
 interface ShareLinkState {
   shareUrl: string | null;
@@ -49,9 +49,10 @@ export function useShareLink(): ShareLinkState {
       setIsShareCopied(true);
       setTimeout(() => setIsShareCopied(false), 1500); // Reset copied state
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to generate share link:", err);
-      setError(err.message || 'An unknown error occurred');
+      const message = (err instanceof Error) ? err.message : 'An unknown error occurred';
+      setError(message);
       setShareUrl(null);
     } finally {
       setIsSharing(false);

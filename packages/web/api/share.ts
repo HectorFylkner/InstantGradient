@@ -7,10 +7,8 @@
  */
 
 import { nanoid } from 'nanoid';
-import { Gradient } from '@gradient-tool/core';
+import type { Gradient } from '@gradient-tool/core';
 import { kv } from '@vercel/kv'; // Import the Vercel KV client
-
-type Json<T> = Response & { json(): Promise<T> };
 
 /** Generates a unique slug and stores the gradient data. Retries on collision. */
 async function createSlug(data: Gradient): Promise<string> {
@@ -32,17 +30,9 @@ async function createSlug(data: Gradient): Promise<string> {
   throw new Error('Slug collision after multiple attempts');
 }
 
-/** Generic JSON response helper */
-function json(obj: unknown, status = 200, headers: Record<string, string> = {}): Response {
-  return new Response(JSON.stringify(obj), {
-    status: status,
-    headers: { 'Content-Type': 'application/json', ...headers }
-  });
-}
-
 /** Main request handler */
 export default async function handler(req: Request): Promise<Response> {
-  const { pathname } = new URL(req.url);
+  const url = new URL(req.url);
 
   // POST /api/share -> Create gradient and return slug
   if (req.method === 'POST') {
@@ -52,16 +42,19 @@ export default async function handler(req: Request): Promise<Response> {
       const payload = (await req.json()) as Gradient;
       // Basic validation
       if (!payload?.stops?.length || !Array.isArray(payload.stops)) {
-        return json({ error: 'Invalid gradient data' }, 400);
+        return new Response('Invalid gradient data', { status: 400 });
       }
       const slug = await createSlug(payload);
-      return json({ slug }); // Successfully created
-    } catch (error: any) { // Catch specific errors if needed
-       if (error.message?.includes('Slug collision')) {
-           return json({ error: 'Failed to generate unique ID, please try again' }, 500);
-       } 
+      return Response.json({ slug }); // Use standard Response.json()
+    } catch (error: unknown) {
+       // Type guard for Error object
+       let errorMessage = 'Could not create share link';
+       if (error instanceof Error && error.message?.includes('Slug collision')) {
+           errorMessage = 'Failed to generate unique ID, please try again';
+           return new Response(JSON.stringify({ error: errorMessage }), { status: 500 });
+       }
        console.error('Error creating share link:', error);
-       return json({ error: 'Could not create share link' }, 500);
+       return new Response(JSON.stringify({ error: errorMessage }), { status: 500 });
     }
   }
 
@@ -70,34 +63,37 @@ export default async function handler(req: Request): Promise<Response> {
     // No need to check KV availability here
     
     // Extract slug - prefer query param for simplicity with standard fetch
-    const url = new URL(req.url);
     const slug = url.searchParams.get('slug');
 
     if (!slug) {
-      return json({ error: 'Missing slug parameter' }, 400);
+      return new Response('Missing slug parameter', { status: 400 });
     }
 
     try {
       // Use Vercel KV client to get the data
       const raw = await kv.get<string>(slug); // Specify type if known (stringified JSON)
       if (raw === null) { // kv.get returns null if not found
-        return json({ error: 'Gradient not found' }, 404);
+        return new Response('Gradient not found', { status: 404 });
       }
       // Parse the stored JSON string
       const gradient = JSON.parse(raw) as Gradient;
       // Return the gradient data with caching headers
-      return json(gradient, 200, {
-        'Cache-Control': 'public, max-age=31536000, immutable' // Cache for 1 year
+      return Response.json(gradient, {
+        status: 200,
+        headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } // Cache for 1 year
       });
     } catch (error) {
         console.error('Error fetching share link:', error);
         // Don't expose detailed errors
-        return json({ error: 'Could not retrieve gradient'}, 500);
+        return new Response(JSON.stringify({ error: 'Could not retrieve gradient' }), { status: 500 });
     }
   }
 
   // Fallback for unsupported methods
-  return json({ error: 'Method Not Allowed'}, 405, { 'Allow': 'GET, POST' });
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { 'Allow': 'GET, POST' }
+  });
 }
 
 // Vercel specific config (optional, can be in vercel.json)

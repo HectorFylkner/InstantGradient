@@ -37,7 +37,7 @@ export function useDrag(
     });
   }, [onMove]);
 
-  const handlePointerUp = useCallback((event: PointerEvent) => {
+  const handlePointerUp = useCallback((_event: PointerEvent) => {
     if (!isDragging.current) return;
 
     cancelAnimationFrame(rafId.current!); 

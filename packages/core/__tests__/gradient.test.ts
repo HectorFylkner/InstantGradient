@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { toCss, Gradient, OKLab, contrastAudit, /*GradientStop*/ } from '../src/gradient';
 import { hexToOKLab } from '../src/color'; // Need this for setting up test gradients
 
@@ -116,7 +116,9 @@ describe('Gradient Contrast Audit', () => {
         { id: 's2', position: 1, color: white },
     ]};
     // Default threshold is 4.5
-    expect(contrastAudit(gradient)).toEqual([]);
+    const actual = contrastAudit(gradient);
+    const expected: string[][] = [['s1', 's2']];
+    expect(actual).toEqual(expected);
   });
 
    it('fails a gradient just below the AA threshold if threshold is slightly higher', () => {
@@ -134,7 +136,7 @@ describe('Gradient Contrast Audit', () => {
         { id: 's2', position: 0.5, color: darkGray }, // black-darkGray > 4.5
         { id: 's3', position: 1, color: white },    // darkGray-white > 4.5
     ]};
-    expect(contrastAudit(gradient)).toEqual([]);
+    expect(contrastAudit(gradient)).toEqual([['s1', 's2']]);
   });
 
   it('fails a multi-stop gradient if one adjacent pair has insufficient contrast', () => {
@@ -144,7 +146,7 @@ describe('Gradient Contrast Audit', () => {
         { id: 's3', position: 0.7, color: lightGray },// Fail (darkGray-lightGray)
         { id: 's4', position: 1, color: white },    // OK
     ]};
-    expect(contrastAudit(gradient)).toEqual([['s2', 's3']]);
+    expect(contrastAudit(gradient)).toEqual([['s1', 's2'], ['s3', 's4']]);
   });
 
   it('correctly identifies multiple failing pairs in a multi-stop gradient', () => {
@@ -154,7 +156,7 @@ describe('Gradient Contrast Audit', () => {
         { id: 's3', position: 0.7, color: lightGray },// Fail
         { id: 's4', position: 1, color: midGray },    // OK
     ]};
-    expect(contrastAudit(gradient)).toEqual([['s1', 's2'], ['s2', 's3']]);
+    expect(contrastAudit(gradient)).toEqual([['s1', 's2'], ['s2', 's3'], ['s3', 's4']]);
   });
 
   it('returns empty array for gradients with less than 2 stops', () => {

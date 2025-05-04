@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
-import { renderGradientGL, Gradient, toCss } from '@gradient-tool/core';
+import { renderGradientGL, toCss } from '@gradient-tool/core';
+import type { Gradient } from '@gradient-tool/core';
 
 export interface GradientCanvasProps {
   gradient: Gradient;
@@ -22,10 +23,10 @@ export const GradientCanvas = forwardRef<GradientCanvasHandle, GradientCanvasPro
 ) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const offscreenCanvasRef = useRef<OffscreenCanvas | null>(null);
-  const [useGpu, setUseGpu] = useState(true); // TODO: Make this configurable via flag/prop
+  const [_useGpu, _setUseGpu] = useState(true); // TODO: Make this configurable via flag/prop - Prefixed unused setter
   const [gpuError, setGpuError] = useState(false);
   const fallbackRef = useRef<HTMLDivElement>(null);
-  const isGpuPath = useGpu && !gpuError;
+  const isGpuPath = _useGpu && !gpuError; // Use prefixed var
 
   useEffect(() => {
     if (isGpuPath && canvasRef.current) {

@@ -1,6 +1,7 @@
 import * as Slider from '@radix-ui/react-slider';
 import * as Popover from '@radix-ui/react-popover';
-import { GradientStop, oklabToHex, hexToOKLab } from '@gradient-tool/core';
+import type { GradientStop } from '@gradient-tool/core';
+import { oklabToHex, hexToOKLab } from '@gradient-tool/core';
 import { useGradientStore } from '@/state/useGradientStore';
 import { motion } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
@@ -59,7 +60,7 @@ export function StopHandle({ stop }: { stop: GradientStop }) {
         max={100}
         step={0.1}
         className="relative flex items-center select-none touch-none w-full h-5 cursor-pointer"
-        onValueChange={([v]) => updateStopPosition(stop.id, v / 100)}
+        onValueChange={([v]) => updateStopPosition(stop.id, v! / 100)}
         aria-label="Gradient stop position"
       >
         <Slider.Track className="bg-neutral-200 relative grow rounded-full h-[3px]">
