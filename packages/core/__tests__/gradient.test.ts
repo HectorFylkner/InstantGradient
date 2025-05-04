@@ -83,7 +83,7 @@ describe('Gradient Contrast Audit', () => {
   const midGray = hexToOKLab('#777777'); // WCAG contrast ~4.55 against white
   const lightGray = hexToOKLab('#d3d3d3'); // WCAG contrast ~1.67 against white
   const darkGray = hexToOKLab('#333333'); // WCAG contrast ~7.0 against white
-  const red = hexToOKLab('#ff0000');
+  const _red = hexToOKLab('#ff0000'); // Prefixed
   const yellow = hexToOKLab('#ffff00'); // Low contrast against white
 
   it('passes a high-contrast gradient (black to white)', () => {

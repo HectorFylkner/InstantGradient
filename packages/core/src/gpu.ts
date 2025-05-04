@@ -5,7 +5,7 @@
  * Opt-in via `enableGpu` flag.
  */
 
-import { Gradient, GradientStop } from './gradient';
+import { Gradient } from './gradient';
 import { clamp } from './utils';
 import wgslSource from './shader.wgsl?raw'; // Import shader source
 
@@ -54,11 +54,11 @@ function oklabToLinearRgb(oklab: { l: number, a: number, b: number }): [number, 
 
 // Module-level cache for GPU objects
 let gpuDevice: GPUDevice | null = null;
-let gpuContextMap = new WeakMap<OffscreenCanvas, GPUCanvasContext>();
+const gpuContextMap = new WeakMap<OffscreenCanvas, GPUCanvasContext>();
 let gpuPipeline: GPURenderPipeline | null = null;
 
 // CPU fallback (keep as is)
-function cpuFallback(canvas: OffscreenCanvas, gradient: Gradient) {
+function cpuFallback(canvas: OffscreenCanvas, _gradient: Gradient) {
     console.warn("WebGPU not available, CPU fallback not implemented yet.");
     const ctx = canvas.getContext('2d');
     if (ctx) {

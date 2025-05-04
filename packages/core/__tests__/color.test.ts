@@ -149,8 +149,8 @@ describe('Color Conversions', () => {
      const c2_lch = oklabToOklch(c2_lab);
 
     it('interpolates OKLab midpoint correctly', () => {
-        const midpoint = interpolateOKLab(c1_lab, c2_lab, 0.5);
-        expectOklabClose(midpoint, { l: 0.5, a: 0.0, b: 0.05 });
+        const _midpoint = interpolateOKLab(c1_lab, c2_lab, 0.5);
+        expectOklabClose(_midpoint, { l: 0.5, a: 0.0, b: 0.05 });
     });
 
     it('interpolates OKLab start point correctly', () => {
@@ -177,7 +177,7 @@ describe('Color Conversions', () => {
         const blue = hexToOKLab('#0000ff');
         const _red = hexToOKLab('#ff0000'); // Prefixed unused variable
 
-        const midpoint_oklab = interpolateOKLab(blue, _red, 0.5);
+        const _midpoint_oklab = interpolateOKLab(blue, _red, 0.5);
         // Basic check: Ensure components are between blue and red
     });
 

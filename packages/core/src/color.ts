@@ -230,7 +230,9 @@ export function interpolateOKLab(color1: OKLab, color2: OKLab, t: number): OKLab
 export function interpolateOklch(color1: Oklch, color2: Oklch, t: number): Oklch {
     t = clamp(t, 0, 1);
 
+    // eslint-disable-next-line prefer-const -- Value might be adjusted based on deltaHue logic
     let hue1 = color1.h;
+    // eslint-disable-next-line prefer-const -- Value might be adjusted based on deltaHue logic
     let hue2 = color2.h;
 
     // Handle hue interpolation (shortest path)
@@ -241,7 +243,6 @@ export function interpolateOklch(color1: Oklch, color2: Oklch, t: number): Oklch
     } else {
         deltaHue = (diff > 180) ? diff - 360 : diff + 360;
     }
-    // eslint-disable-next-line prefer-const -- hue1 might be reassigned implicitly via deltaHue calculation
     const interpolatedHue = (hue1 + deltaHue * t) % 360;
 
     return {
